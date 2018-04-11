@@ -1,4 +1,4 @@
-FROM debian:9-slim
+FROM debian:9-slim as GOSU
 MAINTAINER DST Academy <support@dst.academy>
 
 # Set build arguments.
@@ -18,11 +18,13 @@ RUN set -ex \
 	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
 	&& rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu \
-	&& gosu nobody true \
-	# Clean up.
-	&& apt-get purge -y --auto-remove wget gnupg2 dirmngr \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	&& gosu nobody true
+
+FROM debian:9-slim
+MAINTAINER DST Academy <support@dst.academy>
+
+# Install gosu.
+COPY --from=GOSU /usr/local/bin/gosu /usr/local/bin/gosu
 
 # Set default command.
 CMD ["gosu"]
