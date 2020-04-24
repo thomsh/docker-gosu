@@ -1,5 +1,4 @@
-FROM debian:9-slim as GOSU
-MAINTAINER DST Academy <support@dst.academy>
+FROM debian:buster as GOSU
 
 # Set build arguments.
 ARG GOSU_VERSION
@@ -20,8 +19,7 @@ RUN set -ex \
 	&& chmod +x /usr/local/bin/gosu \
 	&& gosu nobody true
 
-FROM debian:9-slim
-MAINTAINER DST Academy <support@dst.academy>
+FROM debian:buster
 
 # Install gosu.
 COPY --from=GOSU /usr/local/bin/gosu /usr/local/bin/gosu
